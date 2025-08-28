@@ -7,7 +7,10 @@ Tiempo muerto por envío serial: 0,07ms por caracter enviado (Usando baudrate=11
 Programado por: Luis Felipe Ramirez Garcia, Instituto de Fisica, Universidad de Antioquia.
 Revisado: 2025
 
-VERSION PARA TARJETAS COLOR ROJO (Sensor de temperatura MAX6675)
+Cambios a la versión V4:
+Implementación de la función salidas_digitales(); para la gestión de las salidas digitales.
+
+VERSION PARA TARJETAS COLOR ROJO
 */
 
 #define led1 34
@@ -15,22 +18,44 @@ VERSION PARA TARJETAS COLOR ROJO (Sensor de temperatura MAX6675)
 #define led3 32
 #define led4 31
 
+#define boton1 2
+#define boton2 3
+#define boton3 4
+#define boton4 5
+
 //PINES DEL SPI
 #define MISOS 12
 #define SCKS 13  
 #define CSS 44
 
-#define foto 7
-#define foto2 8
+#define foto 8
+#define foto2 38
+#define digital_pin 6
+#define pin_pwm 5
 
 int numero_funcion;
+
+void interrupcion_boton1() {
+  //Serial.println("Boton 1 pulsado"); //Debugging
+  noTone(digital_pin);
+  analogWrite(pin_pwm,0);
+  digitalWrite(digital_pin,0);
+  digitalWrite(led1,0);
+}
 
 void setup(){
  pinMode(led1, OUTPUT);
  pinMode(led2, OUTPUT);
  pinMode(led3, OUTPUT);
  pinMode(led4, OUTPUT);
+ pinMode(boton1, INPUT);
+ pinMode(boton2, INPUT);
+ pinMode(boton3, INPUT);
+ pinMode(boton4, INPUT);
+ pinMode(digital_pin, OUTPUT);
+ digitalWrite(digital_pin,0);
  pinMode(foto, INPUT);
+ pinMode(foto2, INPUT);
  pinMode(MISOS, INPUT);      // Configura pines del SPI (no se hace uso del módulo incorporado)
  pinMode(SCKS, OUTPUT);
  pinMode(CSS, OUTPUT);
@@ -40,6 +65,8 @@ void setup(){
  digitalWrite(led2,0);
  digitalWrite(led3,0);
  digitalWrite(led4,0);
+
+ attachInterrupt(digitalPinToInterrupt(boton1), interrupcion_boton1, FALLING); // Interrupción al pulsar el botón 1
  
  Serial.begin(115200);
  muestra_menu();
@@ -70,6 +97,9 @@ void loop(){
     case 6:
       doble_fotocompuerta();
       break;
+    case 7:
+      salidas_digitales();
+      break;
     case 99:
       break;
   }
@@ -87,7 +117,7 @@ int menu_ppal(){
    while(Serial.available() <= 0); //Espera hasta que llegue un caracter
    dato_serial = Serial.read();
    
-   if(dato_serial == 65){//Letra A: sensores análogos pero envía un solo dato. Para usar con interfaz gráfica.
+   if(dato_serial == 65){//Letra A: sensores análogos pero envía un solo dato. Uso reservado.
      return 0; 
    }
    
@@ -106,25 +136,30 @@ int menu_ppal(){
      Serial.println("");
      return 2;
    }
-   if(dato_serial == 51){//Caracter 3: tiempo de oscuridad para sensor en puerto D7.
+   if(dato_serial == 51){//Caracter 3: tiempo de oscuridad para sensor en puerto D8.
      Serial.write(dato_serial);
      Serial.println("");
      return 3;
    }
-   if(dato_serial == 52){//Caracter 4: tiempo de transición claridad<->oscuridad en puerto D7.
+   if(dato_serial == 52){//Caracter 4: tiempo de transición claridad<->oscuridad en puerto D8.
      Serial.write(dato_serial);
      Serial.println("");
      return 4;
    }
-   if(dato_serial == 53){//Caracter 5: tiempo de transición claridad<->oscuridad en puerto D7.
+   if(dato_serial == 53){//Caracter 5: tiempo de transición claridad<->oscuridad en puerto D8.
      Serial.write(dato_serial);
      Serial.println("");
      return 5;
    }
-   if(dato_serial == 54){//Caracter 6: tiempo entre sensores conectados a D7 y D8
+   if(dato_serial == 54){//Caracter 6: tiempo entre sensores conectados a D8 y D38
      Serial.write(dato_serial);
      Serial.println("");
      return 6;
+   }
+   if(dato_serial == 55){//Caracter 7: Salidas digitales
+    Serial.write(dato_serial);
+    Serial.println("");
+    return 7;
    }
    
    return 99; //Indica que no recibió un caracter valido. A esta funcion se le pueden añadir nuevas opciones cada vez que se cree una función nueva.
@@ -139,10 +174,11 @@ void muestra_menu(){
    Serial.println("Ingrese el numero correspondiente a la opcion deseada: ");
    Serial.println("\t 1 : Sensores analogos en los puertos A0, A1, A2, A3.");
    Serial.println("\t 2 : Sensor de temperatura en el puerto SPI.");
-   Serial.println("\t 3 : Tiempo de oscuridad para el sensor reflectivo conectado al puerto D7.");
-   Serial.println("\t 4 : Tiempos de transicion claridad -> oscuridad para el sensor reflectivo conectado al puerto D7.");
-   Serial.println("\t 5 : Tiempos de transicion claridad <-> oscuridad para el sensor reflectivo conectado al puerto D7.");
-   Serial.println("\t 6 : Intervalo de tiempo entre los sensores reflectivos conectados a los puertos D7 y D8");
+   Serial.println("\t 3 : Tiempo de oscuridad para el sensor reflectivo conectado al puerto D8.");
+   Serial.println("\t 4 : Tiempos de transicion claridad -> oscuridad para el sensor reflectivo conectado al puerto D8.");
+   Serial.println("\t 5 : Tiempos de transicion claridad <-> oscuridad para el sensor reflectivo conectado al puerto D8.");
+   Serial.println("\t 6 : Intervalo de tiempo entre los sensores reflectivos conectados a los puertos D8 y D38.");
+   Serial.println("\t 7 : Salidas digitales en los pines 5 y 6.");
    Serial.print(">");
    return;
 }
@@ -224,13 +260,13 @@ void sensor_temperatura(){
    
    Serial.println("");
    Serial.println("\t Ingrese la letra correspondiente al tiempo entre datos:");
-   Serial.println("\t \t a: 100ms; b: 500ms; c: 1s; d: 2s");
+   Serial.println("\t \t a: 200ms; b: 500ms; c: 1s; d: 2s");
    Serial.print(">");
    while(Serial.available() <= 0); //Espera hasta que llegue un caracter
    serial_dato = Serial.read();
    switch(serial_dato){
     case 97:
-      tiempo=100;
+      tiempo=200;
       break;
     case 98:
       tiempo=500;
@@ -293,7 +329,7 @@ void sensor_temperatura(){
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 //Función para tiempos de transición claro->oscuro
-//Envia el valor del tiempo transcurrido cada vez que hay una transición claro-oscuro en el sensor reflectivo conectado al puerto D7
+//Envia el valor del tiempo transcurrido cada vez que hay una transición claro-oscuro en el sensor reflectivo conectado al puerto D8
 void claro_oscuro(){
    
  int flag_start = 0;
@@ -324,7 +360,7 @@ void claro_oscuro(){
  
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Función para tiempos de transición claro<->oscuro
-//Envia el valor del tiempo transcurrido cada vez que hay una transición claro-oscuro u oscuro-claro en el sensor reflectivo conectado al puerto D7.
+//Envia el valor del tiempo transcurrido cada vez que hay una transición claro-oscuro u oscuro-claro en el sensor reflectivo conectado al puerto D8.
 void claro_oscuro_claro(){
  int foto_actual=0;
  int foto_anterior =1;
@@ -352,7 +388,7 @@ void claro_oscuro_claro(){
  return; 
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-//Función para tiempos de transición claro<->oscuro
+//Función para intervalo de tiempo entre fotocompuertas
 void doble_fotocompuerta(){
   int t1;
   
@@ -364,13 +400,13 @@ void doble_fotocompuerta(){
   Serial.read(); //Así no se vaya a usar hay que leerlo para vaciar el buffer.
   Serial.println("Tiempo entre sensores reflectivos (ms).");
   while(Serial.available()<=0){
-   if(digitalRead(foto)==1){ //El sensor reflectivo conectados a D7 retorna un estado alto cuando se interrumpe el haz.
+   if(digitalRead(foto)==1){ //El sensor reflectivo conectado a D8 retorna un estado alto cuando se interrumpe el haz.
      t1 = millis();
-     while(digitalRead(foto2)==0 && Serial.available()<=0){} //Espera a que se interrumpa el otro sensor reflectivo (D8)
+     while(digitalRead(foto2)==0 && Serial.available()<=0){} //Espera a que se interrumpa el otro sensor reflectivo (D38)
      Serial.println(millis()-t1);
-   }else if(digitalRead(foto2)==1){//El sensor reflectivo conectados a D8 retorna un estado alto cuando se interrumpe el haz.
+   }else if(digitalRead(foto2)==1){//El sensor reflectivo conectado a D8 retorna un estado alto cuando se interrumpe el haz.
      t1 = millis();
-     while(digitalRead(foto)==0 && Serial.available()<=0){} //Espera a que se interrumpa el otro sensor reflectivo (D7)
+     while(digitalRead(foto)==0 && Serial.available()<=0){} //Espera a que se interrumpa el otro sensor reflectivo (D8)
      Serial.println(millis()-t1);
    }
   }
@@ -379,7 +415,97 @@ void doble_fotocompuerta(){
   Serial.println("Presione el numero correspondiente a la funcion deseada o m para volver al menu.");
   return;
 }
- 
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Función para la gestión de los puertos de salida digital: 5,6 y led1.
+
+void salidas_digitales(){
+  char serial_dato;
+  int valor_pwm=0;
+  int valor_frec=1;
+  int valor_umbral=100;
+  int estado_pin6=0;
+  
+  Serial.println("");
+  Serial.println("\t Ingrese la letra correspondiente al modo:");
+  Serial.println("\t \t a: Generar señal PWM en el pin 5.");
+  Serial.println("\t \t b: Generar señal cuadrada en pin 6.");
+  Serial.println("\t \t c: Desactivar el Pin 6 segun el nivel del puerto A0.");
+  Serial.println("\t \t d: Encendido/apagado manual del pin 6.");
+  Serial.print(">");
+
+  while(Serial.available()<=0); //Espera hasta que llegue un caracter
+     serial_dato = Serial.read();
+     switch(serial_dato){
+      case 97: //a PWM
+        Serial.println("a");
+        Serial.println("Ingrese el valor PWM (0-255) que desea asignar al pin 5:");
+        Serial.print(">");
+        while(Serial.available()<=0);
+        valor_pwm=Serial.parseInt();
+        analogWrite(pin_pwm, valor_pwm);
+        Serial.println(valor_pwm);
+        Serial.println("Señal PWM activada en el pin 5. Presione el botón S1 para desactivar.");
+        break;
+      case 98: //b Señal cuadrada con funcion tone()
+        Serial.println("b");
+        Serial.println("Ingrese la frecuencia (Hz) de la señal que desea generar en el pin 6:");
+        Serial.print(">");
+        while(Serial.available()<=0);
+        valor_frec=Serial.parseInt();
+        tone(digital_pin, valor_frec);
+        Serial.println(valor_frec);
+        Serial.println("Señal activada en el pin 6. Presione el botón S1 para desactivar.");
+        break;
+      case 99: //c Control ON/OFF
+        Serial.println("c");
+        Serial.println("Ingrese el nivel (0-1023) del puerto A0 a partir de cual se desactivará el pin 6:");
+        Serial.print(">");
+        while(Serial.available()<=0);
+        valor_umbral=Serial.parseInt();
+        Serial.println(valor_umbral);
+        Serial.println("Función Iniciada. Presione una tecla para terminar...");
+        while(digitalRead(boton1)=='1' || Serial.available()<=0){
+          int valor_A0=analogRead(A0);
+          Serial.println(valor_A0);
+          if(valor_A0<valor_umbral){
+            digitalWrite(digital_pin, 1);
+            digitalWrite(led1, 1);
+          }else{
+            digitalWrite(digital_pin, 0);
+            digitalWrite(led1, 0);
+          }
+          delay(100);
+        }
+        Serial.read();
+        digitalWrite(digital_pin,0);
+        digitalWrite(led1, 0);
+        break;
+      case 100: //d Encendido/apagado manual
+        Serial.println("d");
+        Serial.println("Ingrese el estado deseado para el pin 6: 1 (encedido) ó 0 (apagado):");
+        Serial.print(">");
+        while(Serial.available()<=0);
+        estado_pin6=Serial.parseInt();
+        Serial.println(estado_pin6);
+        if(estado_pin6==1){
+          digitalWrite(digital_pin,1);
+          digitalWrite(led1,1);
+          Serial.println("Pin 6 activado. Presione el botón S1 para desactivarlo.");
+        }else if(estado_pin6==0){
+          digitalWrite(digital_pin,0);
+          digitalWrite(led1,0);
+          Serial.println("Pin 6 desactivado.");
+        }
+        break;
+      default:
+        Serial.println("Letra no valida. Presione m para volver al menu");
+        return;
+     }
+   Serial.println("FIN.");
+   Serial.println("Presione el numero correspondiente a la funcion deseada o m para volver al menu.");
+   return;
+}
 ///////////////////////////////////////////FUNCIONES AUXILIARES///////////////////////////////////////////
 
 ///// lee_temp(); Ejecuta el protocolo necesario para leer el valor de la temperatura (12bits con incrementos correspondientes a 0.25°C) con el chip MAX6675

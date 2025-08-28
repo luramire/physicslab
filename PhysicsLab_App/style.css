@@ -13,6 +13,20 @@ QLabel {
     color: #2c3e50;
 }
 
+QLabel#label_title_line1 {
+    /* Override or set different styles for this specific label */
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
+QLabel#label_title_line2 {
+    /* Override or set different styles for this specific label */
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
 /* QPushButton */
 QPushButton {
     background-color: #2980b9;

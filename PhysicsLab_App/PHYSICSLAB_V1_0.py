@@ -12,10 +12,8 @@ Warning: when running in windows 11 computers, the plot does not work.
 pip install "PySide6==6.5.2"
 It also worked downgrading to: pip install "PySide==6.8.0.2" in Python 3.13.5 (windows 11)
 
-Pending:
-*Falta desactivar el botón de desconectar cuando entra a la funcion de fotocompuertas
-*Falta deshabilitar la opción de calcular la velocidad cuando el tiempo es cero o poner un try:
-*Ayuda tab, logos de la universidad y el grupo
+Finished and debugged.
+
 
 @author: AIO520 Ci5
 """
@@ -69,6 +67,7 @@ class MainWindow(uiclass, baseclass):
     analog_active_flag = 0 #Flag that is set while the analog sensors function is active
     spi_active_flag = 0 #Flag that is set while the spi sensors function is active
     photo_active_flag = 0 #Flag that is set while the photogate sensors functions are active
+    on_off_controller_active_flag = 0 #Flag that is set while the ON/OFF controller of port D6 is active
 
     def __init__(self):
         super().__init__()
@@ -81,8 +80,16 @@ class MainWindow(uiclass, baseclass):
         self.pixmap_claro_oscuro = QPixmap("icons/tiempos_claro_oscuro.bmp")
         self.pixmap_claro_oscuro_claro = QPixmap("icons/tiempos_claro_oscuro_claro.bmp")
         self.pixmap_doble_photogate = QPixmap("icons/tiempos_doble_compuerta")
+        
         self.label_photo_options.setPixmap(self.pixmap_oscuridad)
-
+        self.pixmap_logoudea = QPixmap("icons/udea_logo.png")
+        self.udea_logo_label.setPixmap(self.pixmap_logoudea)
+        self.pixmap_logogicm = QPixmap("icons/gicm_logo_small.png")
+        self.gicm_logolabel.setPixmap(self.pixmap_logogicm)
+        self.pixmap_qrcode = QPixmap("icons/QR-code.png")
+        self.label_qr.setPixmap(self.pixmap_qrcode) 
+        self.pixmap_board_diagram  =  QPixmap("icons/board_drawing.png")
+        self.label_diagram.setPixmap(self.pixmap_board_diagram)
     ######################### Main funcions
     def start_thread(self):
         self.comm = Communicate()
@@ -100,6 +107,10 @@ class MainWindow(uiclass, baseclass):
         self.spi_start_btn.setEnabled(False)
         self.photo_start_btn.clicked.connect(self.photo_start)
         self.photo_start_btn.setEnabled(False)
+        self.port5_apply_btn.clicked.connect(self.port5_apply)
+        self.port5_apply_btn.setEnabled(False)
+        self.port6_apply_btn.clicked.connect(self.port6_apply)
+        self.port6_apply_btn.setEnabled(False)
         self.save_plot_btn.clicked.connect(self.save_plot_data)
         self.save_plotbar_btn.clicked.connect(self.save_plotbar_data)
         self.auto_bins.clicked.connect(self.show_nbins)
@@ -111,6 +122,8 @@ class MainWindow(uiclass, baseclass):
         self.zero_A2.clicked.connect(self.zeroa2)
         self.zero_A3.clicked.connect(self.zeroa3)
         self.photo_option.currentIndexChanged.connect(self.photo_opt_changed)
+        self.port5_option.currentIndexChanged.connect(self.port5_opt_changed)
+        self.port6_option.currentIndexChanged.connect(self.port6_opt_changed)
         
     def refresh_com_ports(self):
         self.selectPort.clear()
@@ -146,7 +159,7 @@ class MainWindow(uiclass, baseclass):
             connected_flag = 0
             serial_port.close()
             if(not serial_port.is_open): #Check if really closed
-                self.connect_btn.setText("Conectar")
+                self.connect_btn.setText("CONECTAR")
                 self.StatusText.setText("Desconectado.")
                 self.analog_start_btn.setEnabled(False)
                 self.spi_start_btn.setEnabled(False)
@@ -156,7 +169,7 @@ class MainWindow(uiclass, baseclass):
                 serial_port.port=selected_port
                 serial_port.open()
                 if(serial_port.is_open): #Check if really opened
-                    self.connect_btn.setText("Desconectar")
+                    self.connect_btn.setText("DESCONECTAR")
                     self.StatusText.setText("Conectado a "+selected_port+". Esperando inicialización del sistema...")
                     self.label_connection.setText("Inicializando...")
                     connected_flag = 1
@@ -201,21 +214,61 @@ class MainWindow(uiclass, baseclass):
 
         if serial_port.is_open: #If port is open
             photo_option_selected_index=self.photo_option.currentIndex()
-            serial_port.write((str(3+photo_option_selected_index)+'\n').encode('utf-8')) #Command to start slecetd photogate
+            serial_port.write((str(3+photo_option_selected_index)+'\n').encode('utf-8')) #Command to start selected photogate
+
+    def port5_apply(self): #Apply port 5 state
+
+        if serial_port.is_open: #If port is open
+            port5_option_selected_index=self.port5_option.currentIndex()
+            port5_option=''
+            if(port5_option_selected_index==0):
+                port5_option='a'
+            #elif for future option
+            serial_port.write(('7'+port5_option+'\n'+self.port5_value.text()).encode('utf-8')) #Command to start port5 function
+
+
+    def port6_apply(self): #Apply port 6 state
+
+        if serial_port.is_open: #If port is open
+            port6_option_selected_index=self.port6_option.currentIndex()
+            port6_option=''
+            if(port6_option_selected_index==0):
+                port6_option='b'
+            elif(port6_option_selected_index==1):
+                port6_option='c'
+            elif(port6_option_selected_index==2):
+                port6_option='d'
+
+            if self.on_off_controller_active_flag == 0:
+                serial_port.write(('7'+port6_option+'\n'+self.port6_value.text()).encode('utf-8')) #Command to start port5 function
+            elif self.on_off_controller_active_flag == 1:
+                serial_port.write('.'.encode('utf-8')) #Send any character to end the function
 
     def photo_opt_changed(self): #Function to change the illustration of the selected photogate function
         if(self.photo_option.currentIndex()==0):
             self.label_photo_options.setPixmap(self.pixmap_oscuridad)
-            self.label_portD7.setText("Puerto D7")
+            self.label_portD7.setText("Puerto D8")
         elif(self.photo_option.currentIndex()==1):
             self.label_photo_options.setPixmap(self.pixmap_claro_oscuro)
-            self.label_portD7.setText("Puerto D7")
+            self.label_portD7.setText("Puerto D8")
         elif(self.photo_option.currentIndex()==2):
             self.label_photo_options.setPixmap(self.pixmap_claro_oscuro_claro)
-            self.label_portD7.setText("Puerto D7")
+            self.label_portD7.setText("Puerto D8")
         elif(self.photo_option.currentIndex()==3):
             self.label_photo_options.setPixmap(self.pixmap_doble_photogate)
-            self.label_portD7.setText("Puertos D7 y D8")
+            self.label_portD7.setText("Puertos D8 y D38")
+
+    def port5_opt_changed(self): #Function to change the label of the value to be inserted by the user
+        if(self.port5_option.currentIndex()==0):
+            self.label_value_port5.setText('Duty Cycle (0-255)')
+    
+    def port6_opt_changed(self): #Function to change the label of the value to be inserted by the user
+        if(self.port6_option.currentIndex()==0):
+            self.label_value_port6.setText('Frecuencia (Hz)')
+        elif(self.port6_option.currentIndex()==1):
+            self.label_value_port6.setText('Umbral (1 si <)')
+        elif(self.port6_option.currentIndex()==2):
+            self.label_value_port6.setText('Estado (0 ó 1) ')
 
     def save_plot_data(self):
         # Open file dialog to select file name and location
@@ -369,7 +422,7 @@ class MainWindow(uiclass, baseclass):
         else: #Raw adc value (10 bits)
             converted_value=adc_value-adc_offset
             converted_value_str="{:.0f}".format(converted_value)+"  "
-            ylabel="valor ADC (8bits)"
+            ylabel="valor ADC (10bits)"
 
         return converted_value_str, ylabel
 
@@ -380,18 +433,23 @@ class MainWindow(uiclass, baseclass):
         global time_units_conv
         global time_units_str
         self.StatusText.append(message)
-        print(repr(message))
+        ##print(repr(message))
         #Messages that corresponds to initialization or ending
-        if message == "6 : Intervalo de tiempo entre los sensores reflectivos conectados a los puertos D7 y D8":
+        if message == "7 : Salidas digitales en los pines 5 y 6.":
             self.analog_start_btn.setText("INICIAR")
             self.analog_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
             self.spi_start_btn.setText("INICIAR")
             self.spi_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
             self.photo_start_btn.setText("INICIAR")
             self.photo_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.port5_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.port6_apply_btn.setText("APLICAR")
+            self.port6_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
             self.analog_start_btn.setEnabled(True)
             self.spi_start_btn.setEnabled(True)
             self.photo_start_btn.setEnabled(True)
+            self.port5_apply_btn.setEnabled(True)
+            self.port6_apply_btn.setEnabled(True)
             self.label_connection.setText("")
             return
         if message == "A0\t A1\t A2\t A3":
@@ -403,6 +461,10 @@ class MainWindow(uiclass, baseclass):
             analog_offsets=[0.0]*4
             self.spi_start_btn.setEnabled(False)
             self.photo_start_btn.setEnabled(False)
+            self.port5_apply_btn.setEnabled(False)
+            self.port6_apply_btn.setEnabled(False)
+            self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
+
             return
         if message == "Temperatura":
             self.spi_active_flag=1
@@ -412,6 +474,10 @@ class MainWindow(uiclass, baseclass):
             self.Yaxis_plot.addItems(items)
             self.analog_start_btn.setEnabled(False)
             self.photo_start_btn.setEnabled(False)
+            self.port5_apply_btn.setEnabled(False)
+            self.port6_apply_btn.setEnabled(False)
+            self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
+
             return
         if message == "Tiempo de oscuridad (us)." or message == "Tiempos de transicion claro -> oscuro (ms)." or message == "Tiempos de transicion claro <-> oscuro (ms)" or message == "Tiempo entre sensores reflectivos (ms).":
             self.photo_active_flag=1
@@ -422,6 +488,10 @@ class MainWindow(uiclass, baseclass):
             self.analog_start_btn.setEnabled(False)
             self.spi_start_btn.setEnabled(False)
             self.photo_option.setEnabled(False)
+            self.port5_apply_btn.setEnabled(False)
+            self.port6_apply_btn.setEnabled(False)
+            self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
+
             if(message == "Tiempo de oscuridad (us)."):
                 time_units_conv=1000000 #Only this option give the time in us
                 time_units_str=" us"
@@ -429,24 +499,44 @@ class MainWindow(uiclass, baseclass):
                 time_units_conv=1000
                 time_units_str=" ms"
             time_values=[]
-            return
 
+            return
+        
+        if message == "Función Iniciada. Presione una tecla para terminar...":
+            self.on_off_controller_active_flag=1
+            self.port6_apply_btn.setText("PARAR")
+            self.port6_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStop))
+            items= ["A0 (10 bits)"]
+            self.Yaxis_plot.addItems(items)
+            self.analog_start_btn.setEnabled(False)
+            self.spi_start_btn.setEnabled(False)
+            self.photo_start_btn.setEnabled(False)
+            self.port5_apply_btn.setEnabled(False)
+            self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
+
+            return
+        
         if message == "FIN.":
             self.analog_active_flag=0
             self.spi_active_flag=0
             self.photo_active_flag=0
+            self.on_off_controller_active_flag=0
             self.analog_start_btn.setText("INICIAR")
             self.analog_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
             self.spi_start_btn.setText("INICIAR")
             self.spi_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
             self.photo_start_btn.setText("INICIAR")
             self.photo_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.port6_apply_btn.setText("APLICAR")
+            self.port6_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
             self.Yaxis_plot.clear()
             self.connect_btn.setEnabled(True) #To activate again the disconnect function
             self.analog_start_btn.setEnabled(True)
             self.spi_start_btn.setEnabled(True)
             self.photo_start_btn.setEnabled(True)
             self.photo_option.setEnabled(True)
+            self.port5_apply_btn.setEnabled(True)
+            self.port6_apply_btn.setEnabled(True)
             return
         
         #Messages that are processed depending on the active flag
@@ -488,7 +578,6 @@ class MainWindow(uiclass, baseclass):
             #Aqui va la grafica del histograma
             self.plotbar(x_histo_centers,y_histo,histo_width)
             self.histowidget.setLabel("bottom", ylabel)
-            self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
             return
         
         elif self.spi_active_flag == 1: #SPI temperature sensor
@@ -540,14 +629,20 @@ class MainWindow(uiclass, baseclass):
             if(operation==0): # t_n
                 self.operation_result.setText(message+time_units_str)
                 operation=value
-                velocity=size*time_units_conv/operation
+                if operation>0:
+                    velocity=size*time_units_conv/operation
+                else:
+                    velocity=0
                 self.velocity_value.setText("{:.3f}".format(velocity)+" cm/s")
                 self.average_time.setText("")
             elif(operation==1): #t_n-t_(n-1)
                 if(len_time_values>1):
                     operation=time_values[len_time_values-1]-time_values[len_time_values-2]
                     self.operation_result.setText(str(operation)+time_units_str)
-                    velocity=size*time_units_conv/operation
+                    if operation>0:
+                        velocity=size*time_units_conv/operation
+                    else:
+                        velocity=0
                     avrg_time=(time_values[len_time_values-1]+time_values[len_time_values-2])/(2*time_units_conv)
                     self.velocity_value.setText("{:.3f}".format(velocity)+" cm/s")
                     self.average_time.setText("{:.3f}".format(avrg_time)+" s")
@@ -559,7 +654,10 @@ class MainWindow(uiclass, baseclass):
                 if(len_time_values>2):
                     operation=time_values[len_time_values-1]-time_values[len_time_values-3]
                     self.operation_result.setText(str(operation)+time_units_str)
-                    velocity=size*time_units_conv/operation
+                    if operation>0:
+                        velocity=size*time_units_conv/operation
+                    else:
+                        velocity=0
                     avrg_time=(time_values[len_time_values-1]+time_values[len_time_values-3])/(2*time_units_conv)
                     self.velocity_value.setText("{:.3f}".format(velocity)+" cm/s")
                     self.average_time.setText("{:.3f}".format(avrg_time)+" s")
@@ -615,6 +713,37 @@ class MainWindow(uiclass, baseclass):
             self.histowidget.setLabel("bottom", ylabel)
             self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
             
+            return
+        
+        elif self.on_off_controller_active_flag == 1: #ON/OFF controller option
+            A0_value=int(message)
+           
+            val_to_plot=A0_value
+            ylabel="valor ADC (10bits)"
+            y.append(val_to_plot)
+            self.plot(np.arange(len(y)),np.array(y))
+            self.graphwidget.setLabel("left", ylabel)
+            #Generate histogram:
+            nbins = 'auto' #Default value for the number of bins
+            if(not self.auto_bins.isChecked()):
+                try:
+                    nbins_user=int(self.number_bins.text())
+                    if(nbins_user>0):
+                        nbins=nbins_user
+                    else:
+                        nbins='auto'
+                except ValueError:
+                    nbins='auto'
+            
+            y_histo, x_histo=np.histogram(y, bins=nbins) #Generate histogram data
+            x_histo_centers = (x_histo[:-1] + x_histo[1:]) / 2
+            histo_width = x_histo[1] - x_histo[0]
+            
+            #Aqui va la grafica del histograma
+            self.plotbar(x_histo_centers,y_histo,histo_width)
+            self.histowidget.setLabel("bottom", ylabel)
+            self.connect_btn.setEnabled(False) #To prevent stopping the data transfer when pressing the disconnect button
+
             return
         
 app = QApplication(sys.argv)

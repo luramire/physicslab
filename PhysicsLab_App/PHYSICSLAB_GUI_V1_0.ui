@@ -11,7 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PHYSICSLAB</string>
+   <string>PHYSICSLAB v1.0</string>
+  </property>
+  <property name="statusTip">
+   <string>Programmed by: L. Felipe Ramirez &lt;luisf.ramirez@udea.edu.co&gt;</string>
   </property>
   <property name="whatsThis">
    <string extracomment="Muestra el tiempo promedio entre t_n y t_(n-1) o entre t_n y t_(n-2) de acuerdo con la operación seleccionada."/>
@@ -27,7 +30,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_analog">
      <attribute name="title">
@@ -49,7 +52,11 @@
        <item row="2" column="2">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLineEdit" name="A2_value"/>
+          <widget class="QLineEdit" name="A2_value">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="zero_A2">
@@ -115,6 +122,9 @@
           <widget class="QLineEdit" name="A0_value">
            <property name="text">
             <string/>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -278,7 +288,11 @@
        <item row="2" column="3">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QLineEdit" name="A3_value"/>
+          <widget class="QLineEdit" name="A3_value">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="zero_A3">
@@ -292,7 +306,11 @@
        <item row="2" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLineEdit" name="A1_value"/>
+          <widget class="QLineEdit" name="A1_value">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="zero_A1">
@@ -314,7 +332,7 @@
         <widget class="QPushButton" name="analog_start_btn">
          <property name="minimumSize">
           <size>
-           <width>90</width>
+           <width>94</width>
            <height>24</height>
           </size>
          </property>
@@ -322,7 +340,8 @@
           <string>INICIAR</string>
          </property>
          <property name="icon">
-          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart">
+           <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
          </property>
         </widget>
        </item>
@@ -362,11 +381,11 @@
        <rect>
         <x>10</x>
         <y>0</y>
-        <width>321</width>
+        <width>291</width>
         <height>111</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2" columnstretch="6,1" columnminimumwidth="0,0">
+      <layout class="QGridLayout" name="gridLayout_2" columnstretch="6,3" columnminimumwidth="0,0">
        <property name="sizeConstraint">
         <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
        </property>
@@ -374,7 +393,7 @@
         <widget class="QComboBox" name="SPI_sensor">
          <item>
           <property name="text">
-           <string>Temperatura (MAX6674/5)</string>
+           <string>Temperatura (MAX6675)</string>
           </property>
          </item>
         </widget>
@@ -383,6 +402,9 @@
         <widget class="QLineEdit" name="SPI_sens_value">
          <property name="text">
           <string/>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -409,7 +431,7 @@
         <widget class="QPushButton" name="spi_start_btn">
          <property name="minimumSize">
           <size>
-           <width>90</width>
+           <width>94</width>
            <height>25</height>
           </size>
          </property>
@@ -422,7 +444,8 @@
           <string>INICIAR</string>
          </property>
          <property name="icon">
-          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart">
+           <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
          </property>
         </widget>
        </item>
@@ -430,7 +453,7 @@
         <widget class="QComboBox" name="spi_time_select">
          <item>
           <property name="text">
-           <string>100 ms</string>
+           <string>200 ms</string>
           </property>
          </item>
          <item>
@@ -480,6 +503,9 @@
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0">
+       <property name="verticalSpacing">
+        <number>6</number>
+       </property>
        <item row="1" column="0">
         <widget class="QComboBox" name="photo_option">
          <property name="font">
@@ -526,7 +552,8 @@
           <string>INICIAR</string>
          </property>
          <property name="icon">
-          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart">
+           <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
          </property>
         </widget>
        </item>
@@ -538,7 +565,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Puerto D7</string>
+          <string>Puerto D8</string>
          </property>
         </widget>
        </item>
@@ -552,7 +579,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="photo_value"/>
+          <widget class="QLineEdit" name="photo_value">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -562,7 +593,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../../../.designer/backup/tiempo_oscuridad.bmp</pixmap>
+          <pixmap>../../../../../.designer/backup/tiempo_oscuridad.bmp</pixmap>
          </property>
         </widget>
        </item>
@@ -685,6 +716,9 @@
       <property name="text">
        <string/>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QLineEdit" name="velocity_value">
       <property name="geometry">
@@ -694,6 +728,9 @@
         <width>111</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLabel" name="label_igual2">
@@ -730,6 +767,9 @@
         <width>91</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLabel" name="label_tiempo_medio">
@@ -796,21 +836,225 @@ eje X</string>
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Salidas digitales</string>
+     </attribute>
+     <widget class="QWidget" name="gridLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>0</y>
+        <width>381</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4" rowstretch="1,1,1" columnstretch="3,1">
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="port6_value"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_value_port6">
+         <property name="text">
+          <string>Frecuencia (Hz)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_mode_port6">
+         <property name="text">
+          <string>Modo del puerto D6:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="port6_option">
+         <item>
+          <property name="text">
+           <string>Generador de señal cuadrada</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Valor del puerto A0 Controla ON/OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Definir estado del puerto (0 ó 1)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="port6_apply_btn">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>APLICAR</string>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>311</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_5" rowstretch="1,1,1" columnstretch="2,1">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_mode_port5">
+         <property name="text">
+          <string>Modo del puerto D5</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="port5_option">
+         <item>
+          <property name="text">
+           <string>Señal PWM de 490 Hz</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="port5_value"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_value_port5">
+         <property name="text">
+          <string>Duty Cycle (0-255):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="port5_apply_btn">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>APLICAR</string>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="Line" name="line_3">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>0</y>
+        <width>20</width>
+        <height>131</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Orientation::Vertical</enum>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="tab_help">
      <attribute name="title">
       <string>Ayuda</string>
      </attribute>
-     <widget class="QLabel" name="label_contact">
+     <widget class="QLabel" name="label_qr">
       <property name="geometry">
        <rect>
-        <x>420</x>
-        <y>60</y>
-        <width>201</width>
-        <height>30</height>
+        <x>730</x>
+        <y>5</y>
+        <width>120</width>
+        <height>120</height>
        </rect>
       </property>
       <property name="text">
-       <string>contacto:luisf.ramirez@udea.edu.co</string>
+       <string>QR code</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>10</y>
+        <width>151</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Escanea el código para
+encontrar las guías de
+usuario e información
+adicional.</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_diagram">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>151</width>
+        <height>120</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>board diagram</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>5</y>
+        <width>381</width>
+        <height>120</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Conecta los &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:700;&quot;&gt;sensores analógicos&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; en los puertos A0, A1, A2 ó A3 empleando los cables planos incluidos en el kit. En la pestaña 'Sensores analógicos' selecciona el sensor conectado a cada puerto.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Los &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:700;&quot;&gt;sensores digitales&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; como la termocupla se conectan en el puerto SPI usando el cable plano incluido.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;El &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:700;&quot;&gt;sensor reflectivo (fotocompuerta)&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; se conecta al puerto D8. El segundo sensor reflectivo se conecta al puerto D38. Para que los sensores reflectivos funcionen, debes conectar un adaptador de 12 V para Arduino en el conector tipo DC-jack de la tarjeta. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Las &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:700;&quot;&gt;salidas digitales&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; se acceden desde los pines 5 ó 6 empleando cables de protoboard. Las señales son generadas respecto al pin de tierra (GND). Puedes desactivar las señales en cualquier momento presionando el botón S1 de la tarjeta. &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:700;&quot;&gt;Ten cuidado&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; de no conectar los pines 5 ó 6 a tierra ya que así puedes dañarlos.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Si tienes dudas, visita el sitio:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/luramire/physicslab/wiki&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#004275;&quot;&gt;https://github.com/luramire/physicslab/wiki&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;o escríbeme a luisf.ramirez@udea.edu.co.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;-----------------&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Programado por Luis Felipe Ramírez García usando PySide6.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Instituto de Física&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Universidad de Antioquia&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;2025&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </widget>
@@ -838,7 +1082,7 @@ eje X</string>
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>20</y>
+      <y>25</y>
       <width>601</width>
       <height>29</height>
      </rect>
@@ -863,10 +1107,7 @@ eje X</string>
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::Shape::NoFrame</enum>
     </property>
     <property name="lineWidth">
      <number>2</number>
@@ -894,7 +1135,8 @@ eje X</string>
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="view-refresh"/>
+           <iconset theme="view-refresh">
+            <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
           </property>
          </widget>
         </item>
@@ -917,7 +1159,7 @@ eje X</string>
          </font>
         </property>
         <property name="text">
-         <string>Conectar</string>
+         <string>CONECTAR</string>
         </property>
        </widget>
       </item>
@@ -959,7 +1201,7 @@ eje X</string>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_xyplot">
      <attribute name="title">
@@ -993,7 +1235,8 @@ eje X</string>
        <string>GUARDAR</string>
       </property>
       <property name="icon">
-       <iconset theme="document-save-as"/>
+       <iconset theme="document-save-as">
+        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
       </property>
      </widget>
      <widget class="QPushButton" name="clear_plot_btn">
@@ -1009,7 +1252,8 @@ eje X</string>
        <string>LIMPIAR</string>
       </property>
       <property name="icon">
-       <iconset theme="edit-delete"/>
+       <iconset theme="edit-delete">
+        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
       </property>
      </widget>
      <widget class="QComboBox" name="Yaxis_plot">
@@ -1066,7 +1310,8 @@ eje X</string>
        <string>LIMPIAR</string>
       </property>
       <property name="icon">
-       <iconset theme="edit-delete"/>
+       <iconset theme="edit-delete">
+        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
       </property>
      </widget>
      <widget class="QPushButton" name="save_plotbar_btn">
@@ -1082,7 +1327,8 @@ eje X</string>
        <string>GUARDAR</string>
       </property>
       <property name="icon">
-       <iconset theme="document-save-as"/>
+       <iconset theme="document-save-as">
+        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
       </property>
      </widget>
      <widget class="QLabel" name="label_bins">
@@ -1186,16 +1432,67 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <string>LIMPIAR</string>
       </property>
       <property name="icon">
-       <iconset theme="edit-delete"/>
+       <iconset theme="edit-delete">
+        <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_contact">
+      <property name="geometry">
+       <rect>
+        <x>930</x>
+        <y>190</y>
+        <width>141</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Programmed by:&lt;/p&gt;&lt;p&gt;&lt;br/&gt;L. Felipe Ramírez G.&lt;/p&gt;&lt;p&gt;Instituto de Física&lt;/p&gt;&lt;p&gt;Universidad de Antioquia&lt;/p&gt;&lt;p&gt;2025&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </widget>
+   </widget>
+   <widget class="QLabel" name="udea_logo_label">
+    <property name="geometry">
+     <rect>
+      <x>955</x>
+      <y>310</y>
+      <width>100</width>
+      <height>129</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>udea logo</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::TextFormat::PlainText</enum>
+    </property>
+    <property name="openExternalLinks">
+     <bool>true</bool>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::TextInteractionFlag::NoTextInteraction</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gicm_logolabel">
+    <property name="geometry">
+     <rect>
+      <x>955</x>
+      <y>540</y>
+      <width>100</width>
+      <height>129</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>gicm logo</string>
+    </property>
    </widget>
    <zorder>frame</zorder>
    <zorder>tabWidget</zorder>
    <zorder>label_title_line1</zorder>
    <zorder>label_title_line2</zorder>
    <zorder>tabWidget_2</zorder>
+   <zorder>udea_logo_label</zorder>
+   <zorder>gicm_logolabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
