@@ -14,11 +14,15 @@ It also worked downgrading to: pip install "PySide==6.8.0.2" in Python 3.13.5 (w
 
 Finished and debugged.
 
+#*************note
+This *_temp.py file is adpated to create the correct paths for the app building process.
+It is called by the .spec file. This is not loaded to github.
+Icons for buttons were created with: https://www.svgrepo.com/
 
 @author: AIO520 Ci5
 """
 
-import sys
+import sys, os
 from PySide6.QtWidgets import QApplication, QFileDialog
 from PySide6.QtCore import Signal, QObject
 from PySide6.QtGui import QPixmap
@@ -30,11 +34,21 @@ import serial.tools.list_ports
 import time
 import numpy as np
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and PyInstaller.
+        Works with both files and folders.
+    """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
+    return os.path.join(base_path, relative_path)
+
 def load_stylesheet(filename):
     with open(filename, "r") as f:
         return f.read()
 
-uiclass, baseclass = pg.Qt.loadUiType('PHYSICSLAB_GUI_V1_0.ui')
+icons_dir = resource_path("icons")
+
+ui_file = resource_path("PHYSICSLAB_GUI_V1_0.ui")
+uiclass, baseclass = pg.Qt.loadUiType(ui_file)
 
 serial_port = serial.Serial() #Create an instance of the serial port
 serial_port.baudrate = 115200
@@ -76,20 +90,34 @@ class MainWindow(uiclass, baseclass):
         self.connectWidgets()
         self.refresh_com_ports()
         self.confplot("w")
-        self.pixmap_oscuridad = QPixmap("icons/tiempo_oscuridad.bmp")
-        self.pixmap_claro_oscuro = QPixmap("icons/tiempos_claro_oscuro.bmp")
-        self.pixmap_claro_oscuro_claro = QPixmap("icons/tiempos_claro_oscuro_claro.bmp")
-        self.pixmap_doble_photogate = QPixmap("icons/tiempos_doble_compuerta")
+
+        self.pixmap_oscuridad = QPixmap(os.path.join(icons_dir, "tiempo_oscuridad.bmp"))
+        self.pixmap_claro_oscuro = QPixmap(os.path.join(icons_dir, "tiempos_claro_oscuro.bmp"))
+        self.pixmap_claro_oscuro_claro = QPixmap(os.path.join(icons_dir, "tiempos_claro_oscuro_claro.bmp"))
+        self.pixmap_doble_photogate = QPixmap(os.path.join(icons_dir, "tiempos_doble_compuerta.bmp"))
         
         self.label_photo_options.setPixmap(self.pixmap_oscuridad)
-        self.pixmap_logoudea = QPixmap("icons/udea_logo.png")
+        self.pixmap_logoudea = QPixmap(os.path.join(icons_dir, "udea_logo.png"))
         self.udea_logo_label.setPixmap(self.pixmap_logoudea)
-        self.pixmap_logogicm = QPixmap("icons/gicm_logo_small.png")
+        self.pixmap_logogicm = QPixmap(os.path.join(icons_dir, "gicm_logo_small.png"))
         self.gicm_logolabel.setPixmap(self.pixmap_logogicm)
-        self.pixmap_qrcode = QPixmap("icons/QR-code.png")
+        self.pixmap_qrcode = QPixmap(os.path.join(icons_dir, "QR-code.png"))
         self.label_qr.setPixmap(self.pixmap_qrcode) 
-        self.pixmap_board_diagram  =  QPixmap("icons/board_drawing.png")
+        self.pixmap_board_diagram  =  QPixmap(os.path.join(icons_dir, "board_drawing.png"))
         self.label_diagram.setPixmap(self.pixmap_board_diagram)
+
+        self.analog_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
+        self.spi_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
+        self.photo_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
+        self.port5_apply_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
+        self.port6_apply_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
+        self.clear_plot_btn.setIcon(QIcon(os.path.join(icons_dir, "edit-delete.svg")))
+        self.save_plot_btn.setIcon(QIcon(os.path.join(icons_dir, "document-save.svg")))
+        self.clear_plotbar_btn.setIcon(QIcon(os.path.join(icons_dir, "edit-delete.svg")))
+        self.save_plotbar_btn.setIcon(QIcon(os.path.join(icons_dir, "document-save.svg")))
+        self.clear_console_btn.setIcon(QIcon(os.path.join(icons_dir, "edit-delete.svg")))
+        self.refresh_ports_btn.setIcon(QIcon(os.path.join(icons_dir, "view-refresh.svg")))
+        
     ######################### Main funcions
     def start_thread(self):
         self.comm = Communicate()
@@ -437,14 +465,14 @@ class MainWindow(uiclass, baseclass):
         #Messages that corresponds to initialization or ending
         if message == "7 : Salidas digitales en los pines 5 y 6.":
             self.analog_start_btn.setText("INICIAR")
-            self.analog_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.analog_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.spi_start_btn.setText("INICIAR")
-            self.spi_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.spi_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.photo_start_btn.setText("INICIAR")
-            self.photo_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
-            self.port5_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.photo_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
+            self.port5_apply_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.port6_apply_btn.setText("APLICAR")
-            self.port6_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.port5_apply_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.analog_start_btn.setEnabled(True)
             self.spi_start_btn.setEnabled(True)
             self.photo_start_btn.setEnabled(True)
@@ -455,7 +483,7 @@ class MainWindow(uiclass, baseclass):
         if message == "A0\t A1\t A2\t A3":
             self.analog_active_flag=1
             self.analog_start_btn.setText("PARAR")
-            self.analog_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStop))
+            self.analog_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-stop.svg")))
             items = ["A0", "A1", "A2", "A3"]
             self.Yaxis_plot.addItems(items)
             analog_offsets=[0.0]*4
@@ -469,7 +497,7 @@ class MainWindow(uiclass, baseclass):
         if message == "Temperatura":
             self.spi_active_flag=1
             self.spi_start_btn.setText("PARAR")
-            self.spi_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStop))
+            self.spi_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-stop.svg")))
             items = ["Temp."]
             self.Yaxis_plot.addItems(items)
             self.analog_start_btn.setEnabled(False)
@@ -482,7 +510,7 @@ class MainWindow(uiclass, baseclass):
         if message == "Tiempo de oscuridad (us)." or message == "Tiempos de transicion claro -> oscuro (ms)." or message == "Tiempos de transicion claro <-> oscuro (ms)" or message == "Tiempo entre sensores reflectivos (ms).":
             self.photo_active_flag=1
             self.photo_start_btn.setText("PARAR")
-            self.photo_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStop))
+            self.photo_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-stop.svg")))
             items = ["Valor", "Operación", "Velocidad"]
             self.Yaxis_plot.addItems(items)
             self.analog_start_btn.setEnabled(False)
@@ -505,7 +533,7 @@ class MainWindow(uiclass, baseclass):
         if message == "Función Iniciada. Presione una tecla para terminar...":
             self.on_off_controller_active_flag=1
             self.port6_apply_btn.setText("PARAR")
-            self.port6_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStop))
+            self.port6_apply_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-stop.svg")))
             items= ["A0 (10 bits)"]
             self.Yaxis_plot.addItems(items)
             self.analog_start_btn.setEnabled(False)
@@ -522,13 +550,13 @@ class MainWindow(uiclass, baseclass):
             self.photo_active_flag=0
             self.on_off_controller_active_flag=0
             self.analog_start_btn.setText("INICIAR")
-            self.analog_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.analog_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.spi_start_btn.setText("INICIAR")
-            self.spi_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.spi_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.photo_start_btn.setText("INICIAR")
-            self.photo_start_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.photo_start_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.port6_apply_btn.setText("APLICAR")
-            self.port6_apply_btn.setIcon(QIcon.fromTheme(QIcon.ThemeIcon.MediaPlaybackStart))
+            self.port6_apply_btn.setIcon(QIcon(os.path.join(icons_dir, "media-playback-start.svg")))
             self.Yaxis_plot.clear()
             self.connect_btn.setEnabled(True) #To activate again the disconnect function
             self.analog_start_btn.setEnabled(True)
@@ -747,7 +775,9 @@ class MainWindow(uiclass, baseclass):
             return
         
 app = QApplication(sys.argv)
-app.setStyleSheet(load_stylesheet("style.css"))
+style_file = resource_path("style.css")
+app.setStyleSheet(load_stylesheet(style_file))
+app.setWindowIcon(QIcon(os.path.join(icons_dir, "app_icon.ico")))
 window = MainWindow()
 window.show()
 app.exec()
