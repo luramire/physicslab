@@ -6,3 +6,5 @@ The Arduino-compatible boards are already programmed. Only upload a new Arduino 
 \
 Please, use the python-based interface to facilitate the interaction with the PhysicsLAB system. A ready-to-use windows executable can be downloaded from:\
 https://sourceforge.net/projects/physicslab/files
+
+To learn more about PhysicsLAB, please visit the [wiki](wiki) page.
