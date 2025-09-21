@@ -9,4 +9,4 @@ Before running the main code "PHYSICSLAB_V1_0.py", please install the dependenci
 A ready to use windows executable can be downloaded from:
 https://sourceforge.net/projects/physicslab/files
 
-Version 1.0: August 2025
+Version 1.0: September 2025
