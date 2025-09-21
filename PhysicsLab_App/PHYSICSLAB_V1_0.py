@@ -15,18 +15,19 @@ It also worked downgrading to: pip install "PySide==6.8.0.2" in Python 3.13.5 (w
 Finished and debugged.
 
 #*************note
-This *_temp.py file is adpated to create the correct paths for the app building process.
-It is called by the .spec file. This is not loaded to github.
+This file is adpated to create the correct paths for the app building process.
+It is called by the .spec file.
 Icons for buttons were created with: https://www.svgrepo.com/
 
-@author: AIO520 Ci5
+@author: Felipe Ramirez
 """
 
 import sys, os
-from PySide6.QtWidgets import QApplication, QFileDialog
+from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PySide6.QtCore import Signal, QObject
 from PySide6.QtGui import QPixmap
 from PySide6.QtGui import QIcon
+from ui_mainwindow import Ui_MainWindow  # generated file after running pyside6-uic PHYSICSLAB_GUI_V1_0.ui -o ui_mainwindow.py
 import threading
 import pyqtgraph as pg
 import serial
@@ -34,11 +35,17 @@ import serial.tools.list_ports
 import time
 import numpy as np
 
+
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and PyInstaller.
-        Works with both files and folders.
-    """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
+    """Get absolute path to resource, works for dev, PyInstaller onefile and onedir."""
+    if hasattr(sys, "_MEIPASS"):  # onefile
+        base_path = sys._MEIPASS
+    else:  # onedir
+        exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        internal_path = os.path.join(exe_dir, "_internal", relative_path)
+        if os.path.exists(internal_path):
+            return internal_path
+        return os.path.join(exe_dir, relative_path)  # fallback (dev mode)
     return os.path.join(base_path, relative_path)
 
 def load_stylesheet(filename):
@@ -46,9 +53,6 @@ def load_stylesheet(filename):
         return f.read()
 
 icons_dir = resource_path("icons")
-
-ui_file = resource_path("PHYSICSLAB_GUI_V1_0.ui")
-uiclass, baseclass = pg.Qt.loadUiType(ui_file)
 
 serial_port = serial.Serial() #Create an instance of the serial port
 serial_port.baudrate = 115200
@@ -77,7 +81,7 @@ def serial_data_thread(signal): #Separate thread that emits the serial data (sig
                 data = serial_port.readline().decode('utf-8').strip()
                 signal.data_received_signal.emit(data)
 
-class MainWindow(uiclass, baseclass):
+class MainWindow(QMainWindow, Ui_MainWindow):
     analog_active_flag = 0 #Flag that is set while the analog sensors function is active
     spi_active_flag = 0 #Flag that is set while the spi sensors function is active
     photo_active_flag = 0 #Flag that is set while the photogate sensors functions are active
